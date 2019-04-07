@@ -11,6 +11,7 @@ PROXY = "127.0.0.1:8084"
 print("Started browser")
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('--proxy-server=%s' % PROXY)
+#chrome_options.add_argument("--headless")
 chrome_options.add_argument("user-data-dir=selenium")
 
 chrome = webdriver.Chrome(chrome_options=chrome_options)

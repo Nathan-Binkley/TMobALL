@@ -2,8 +2,24 @@ import requests
 import bs4
 from keys import *
 import json
+import os
+import time
 
 #(b'Authorization', b'Bearer f4e64eb5-67e9-4167-8cbe-93b4629ee82d')
+
+def reset_token():
+	try:
+		open("rm done")
+	except:
+		pass
+	os.system("./start.sh &")
+	while not os.path.exists("done"):
+		print("WAITING FOR FILE")
+		time.sleep(1)
+	os.system("./stopScript.sh")
+	print(open("headers.json").read())
+	os.system("rm done")
+
 
 def long_lat_to_address(longVal, lat):
 	res = requests.get("https://maps.googleapis.com/maps/api/geocode/json?latlng={},{}&key={}".format(lat, longVal, google))
@@ -30,29 +46,19 @@ def get_info_store(zipCode, storeNum):
 			return "The store on {} in {} {}".format(val['name'], val['location']['address']["addressLocality"], val['location']['address']["addressRegion"])
 
 def check_stock(itemNum, locations):
-	headers = {
-	    "Host": "core.saas.api.t-mobile.com",
-	    "Connection": "keep-alive",
-	    "Content-Length": "44",
-	    "Origin": "https://www.t-mobile.com",
-	    "Authorization": "Bearer f4e64eb5-67e9-4167-8cbe-93b4629ee82d",
-	    "activityid": "ae8fcfc4-da53-4cbb-be05-8b7927723e54",
-	    "interactionid": "getInventoryAvailabilityByProductAndLocation",
-	    "Accept": "application/json, text/plain, */*",
-	    "channelid": "web",
-	    "timestamp": "2019-04-07T17:51:39.507Z",
-	    "Content-Type": "application/json;charset=UTF-8",
-	    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36",
-	    "applicationid": "frontend",
-	    "Referer": "https://www.t-mobile.com/cell-phone/samsung-galaxy-s10e",
-	    "Accept-Encoding": "gzip, deflate, br",
-	    "Accept-Language": "en-US,en;q=0.9"
-	}
+	headers = json.load(open('headers.json'))
 	#print "{}".format([str(x) for x in locations])
 	data = '{"products":["' + itemNum + '"],"locations":' + "{}".format(json.dumps([str(x) for x in locations])) + '}'
 	response = requests.post('https://core.saas.api.t-mobile.com/supplychain/inventoryavailability/v1/inventory/search/inventory-details-view', headers=headers, data=data)
 	#print response.text
-	print response.text
+	if 'Invalid Access Token' in str(response.text):
+		print("RESETTING TOKEN")
+		reset_token()
+		headers = json.load(open('headers.json'))
+		#print "{}".format([str(x) for x in locations])
+		data = '{"products":["' + itemNum + '"],"locations":' + "{}".format(json.dumps([str(x) for x in locations])) + '}'
+		response = requests.post('https://core.saas.api.t-mobile.com/supplychain/inventoryavailability/v1/inventory/search/inventory-details-view', headers=headers, data=data)
+		#print response.text
 	return response.json()
 
 
@@ -85,6 +91,7 @@ def search(query):
 			return y
 
 if __name__ == '__main__':
+	#reset_token()
 	stores = [x['id'] for x in store_by_zip('29680')]
 	#for store in stores:
 	#	raw_input(get_info_store('29680', store))
