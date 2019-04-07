@@ -3,6 +3,8 @@ import bs4
 from keys import *
 import json
 
+#(b'Authorization', b'Bearer f4e64eb5-67e9-4167-8cbe-93b4629ee82d')
+
 def long_lat_to_address(longVal, lat):
 	res = requests.get("https://maps.googleapis.com/maps/api/geocode/json?latlng={},{}&key={}".format(lat, longVal, google))
 	return res.json()['results'][0]['formatted_address']
@@ -29,25 +31,28 @@ def get_info_store(zipCode, storeNum):
 
 def check_stock(itemNum, locations):
 	headers = {
-	'Origin': 'https://www.t-mobile.com',
-	'Accept-Encoding': 'gzip, deflate, br',
-	'Accept-Language': 'en-US,en;q=0.9,es-US;q=0.8,es;q=0.7,ru-BY;q=0.6,ru;q=0.5',
-	'Authorization': 'Bearer 831f6f6f-c779-4f66-9f82-7038c2ca82fb',
-	'interactionid': 'getInventoryAvailabilityByProductAndLocation',
-	'channelid': 'web',
-	'Connection': 'keep-alive',
-	'applicationid': 'frontend',
-	'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
-	'activityid': 'ae8fcfc4-da53-4cbb-be05-8b7927723e54',
-	'Accept': 'application/json, text/plain, */*',
-	'timestamp': '2019-03-27T19:27:49.758Z',
-	'Referer': 'https://www.t-mobile.com/cell-phone/apple-iphone-xs?color=gold&memory=64gb',
-	'Content-Type': 'application/json;charset=UTF-8',
+	    "Host": "core.saas.api.t-mobile.com",
+	    "Connection": "keep-alive",
+	    "Content-Length": "44",
+	    "Origin": "https://www.t-mobile.com",
+	    "Authorization": "Bearer f4e64eb5-67e9-4167-8cbe-93b4629ee82d",
+	    "activityid": "ae8fcfc4-da53-4cbb-be05-8b7927723e54",
+	    "interactionid": "getInventoryAvailabilityByProductAndLocation",
+	    "Accept": "application/json, text/plain, */*",
+	    "channelid": "web",
+	    "timestamp": "2019-04-07T17:51:39.507Z",
+	    "Content-Type": "application/json;charset=UTF-8",
+	    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36",
+	    "applicationid": "frontend",
+	    "Referer": "https://www.t-mobile.com/cell-phone/samsung-galaxy-s10e",
+	    "Accept-Encoding": "gzip, deflate, br",
+	    "Accept-Language": "en-US,en;q=0.9"
 	}
 	#print "{}".format([str(x) for x in locations])
 	data = '{"products":["' + itemNum + '"],"locations":' + "{}".format(json.dumps([str(x) for x in locations])) + '}'
 	response = requests.post('https://core.saas.api.t-mobile.com/supplychain/inventoryavailability/v1/inventory/search/inventory-details-view', headers=headers, data=data)
 	#print response.text
+	print response.text
 	return response.json()
 
 
@@ -81,8 +86,8 @@ def search(query):
 
 if __name__ == '__main__':
 	stores = [x['id'] for x in store_by_zip('29680')]
-	for store in stores:
-		raw_input(get_info_store('29680', store))
+	#for store in stores:
+	#	raw_input(get_info_store('29680', store))
 	stockInfo = check_stock("190198451972", stores)
 	for val in stockInfo.get('result', {}).get('inventoryAvailabilityList', []):
 		try:
@@ -98,7 +103,7 @@ if __name__ == '__main__':
 	val = search(query)
 	raw_input(val)
 	if len(val) > 0:
-		print check_stock(val[0])
+		print check_stock(val[0], stores)
 
 #x = get_suggestions("ihpone xs")
 #print search("ihpne xs")
