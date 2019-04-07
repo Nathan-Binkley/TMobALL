@@ -102,3 +102,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+keys.py
+
+# ppt
+~$T-Mobile one.pptx
