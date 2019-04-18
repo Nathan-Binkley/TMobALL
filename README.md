@@ -16,7 +16,7 @@ TMobAll is an attempt to use this API endpoint to gather live inventory informat
 
 ### Authentication
 
-T-Mobile requires a Bearer Token to access the API.  I wasn't able to find exactly where this code is generated, but I wrote a script that uses Selenium to check the inventory on a single item, and it extracts the Bearer Token using a MITM Proxy.
+T-Mobile requires a Bearer Token to access the API.  To generate this token, there is a script that uses Selenium to check the inventory on a single item and it extracts the Bearer Token using a MITM Proxy.
 
 You can call this Bearer Token generator script using the following code:
 
@@ -26,6 +26,8 @@ import search
 token = search.generate_token()
 print("Your Bearer Token is: {}".format(token))
 ```
+
+### API Endpoint
 
 ```python
 import requests
