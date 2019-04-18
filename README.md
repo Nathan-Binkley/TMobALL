@@ -12,8 +12,6 @@ TMobAll is an attempt to use this API endpoint to gather live inventory informat
 
 ## API Endpoint
 
-### Calling the Endpoint Directly
-
 ### Authentication
 
 T-Mobile requires a Bearer Token to access the API.  To generate this token, there is a script that uses Selenium to check the inventory on a single item and it extracts the Bearer Token using a MITM Proxy.
