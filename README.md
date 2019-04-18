@@ -21,7 +21,7 @@ api_endpoint = 'https://core.saas.api.t-mobile.com/supplychain/inventoryavailabi
 
 headers = {
     'Origin': 'https://www.t-mobile.com',
-    'Authorization': 'Bearer 1769bd83-83a5-4f8c-b19c-2e0c6be3816a',
+    'Authorization': 'Bearer {{ BEARER_TOKEN }}',
     'interactionid': 'getInventoryAvailabilityByProductAndLocation',
     'channelid': 'web',
     'timestamp': '2019-04-18T14:28:47.941Z',
