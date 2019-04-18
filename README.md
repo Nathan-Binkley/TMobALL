@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="src/logo.png" width="250"/>
+  <img src="static/logo.png" width="250"/>
 </p>
 
 <h3 align="center">Real-Time Nationwide T-Mobile Inventory Tracker</h3>
