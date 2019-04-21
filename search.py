@@ -21,6 +21,9 @@ def reset_token():
 	print(open("headers.json").read())
 	os.system("rm done")
 
+def generate_token():
+	reset_token()
+	return json.load(open('headers.json'))['Authorization'].partition(" ")[2]
 
 def long_lat_to_address(longVal, lat):
 	res = requests.get("https://maps.googleapis.com/maps/api/geocode/json?latlng={},{}&key={}".format(lat, longVal, google))
