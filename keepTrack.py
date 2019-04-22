@@ -8,6 +8,7 @@ import threading
 import json
 import time
 import database
+import os
 lock = threading.Lock()
 THREADS = 100
 STORES_PER_THREAD = 80
@@ -59,6 +60,7 @@ if __name__ == '__main__':
 				if v not in items:
 					items.append(v)
 	print("Searching for {} Iphones".format(len(items)))
+	count = 0
 	while True:
 		db = {}
 		fileName = str(int(time.time()))
@@ -80,5 +82,7 @@ if __name__ == '__main__':
 			i += 1
 			print("Finished: {} | Found: {}".format(item, len(db[item])))
 		database.updateTable(fileName)
-		print("Sleeping")
+		count += 1
+		print("Sleeping | Run: {}".format(count))
+		os.system("echo {} > count.txt".format(count))
 		time.sleep(60 * 60)
