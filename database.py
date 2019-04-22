@@ -9,6 +9,7 @@ except:
 session = boto3.Session(
     aws_access_key_id=ACCESS_KEY,
     aws_secret_access_key=SECRET_KEY,
+    region_name='us-east-1'
 )
 
 
