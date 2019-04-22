@@ -60,6 +60,7 @@ if __name__ == '__main__':
 				if v not in items:
 					items.append(v)
 	print("Searching for {} Iphones".format(len(items)))
+	xCount = 0
 	count = 0
 	while True:
 		db = {}
@@ -67,6 +68,8 @@ if __name__ == '__main__':
 		i = 0
 		#raw_input(len(list(stores.get_ids(X_VAL))[0]))
 		for item in items:
+			xCount += 1
+			os.system("echo {} > xCount.txt".format(xCount))
 			print("Checking: {}".format(item))
 			start = time.time()
 			try:
