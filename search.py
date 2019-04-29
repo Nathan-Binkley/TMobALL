@@ -49,21 +49,28 @@ def get_info_store(zipCode, storeNum):
 		if val['id'] == str(storeNum):
 			return "The store on {} in {} {}".format(val['name'], val['location']['address']["addressLocality"], val['location']['address']["addressRegion"])
 
-def check_stock(itemNum, locations):
+def check_stock(itemNum, locations, isThreading=False):
 	headers = json.load(open('headers.json'))
 	#print "{}".format([str(x) for x in locations])
-	data = '{"products":["' + itemNum + '"],"locations":' + "{}".format(json.dumps([str(x) for x in locations])) + '}'
-	response = requests.post('https://core.saas.api.t-mobile.com/supplychain/inventoryavailability/v1/inventory/search/inventory-details-view', headers=headers, data=data)
-	#print response.text
-	if 'Invalid Access Token' in str(response.text):
-		print("RESETTING TOKEN")
-		reset_token()
-		headers = json.load(open('headers.json'))
-		#print "{}".format([str(x) for x in locations])
+	for i in range(2):
 		data = '{"products":["' + itemNum + '"],"locations":' + "{}".format(json.dumps([str(x) for x in locations])) + '}'
-		response = requests.post('https://core.saas.api.t-mobile.com/supplychain/inventoryavailability/v1/inventory/search/inventory-details-view', headers=headers, data=data)
-		#print response.text
-	return response.json()
+		try:
+			response = requests.post('https://core.saas.api.t-mobile.com/supplychain/inventoryavailability/v1/inventory/search/inventory-details-view', headers=headers, data=data, timeout=10)
+			#print response.text
+			if 'Invalid Access Token' in str(response.text) and isThreading != True:
+				print("RESETTING TOKEN")
+				reset_token()
+				headers = json.load(open('headers.json'))
+				#print "{}".format([str(x) for x in locations])
+				data = '{"products":["' + itemNum + '"],"locations":' + "{}".format(json.dumps([str(x) for x in locations])) + '}'
+				response = requests.post('https://core.saas.api.t-mobile.com/supplychain/inventoryavailability/v1/inventory/search/inventory-details-view', headers=headers, data=data)
+				#print response.text
+			if response.status_code == 200:
+				return response.json()
+		except Exception as exp:
+			print exp
+			pass
+		print("ERROR checking item")
 
 
 def search_query(query):
